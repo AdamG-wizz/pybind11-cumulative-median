@@ -9,7 +9,7 @@ extensions = [
         "cum_median",
         [
             "src/interface.cpp",
-            "src/cum_mediane.cpp",
+            "src/cum_median.cpp",
         ],
         cxx_std=17,
         extra_compile_args=(
