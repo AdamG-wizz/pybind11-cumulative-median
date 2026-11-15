@@ -6,7 +6,7 @@
 #include <limits>
 #include <stdexcept>
 
-#include "cum_mediane.h"
+#include "cum_median.h"
 
 namespace py = pybind11;
 
@@ -49,13 +49,13 @@ py::array_t<double> cumulative_median_python(
     const py::buffer_info result = output.request();
     auto* output_ptr = static_cast<double*>(result.ptr);
 
-    const int status = cum_mediane(
+    const int status = cumulative_median(
         input_ptr,
         static_cast<int>(input.size),
         output_ptr
     );
 
-    if (status == ERROR_DONNEES_REPETEES) {
+    if (status == ERROR_DUPLICATE_VALUES) {
         throw std::runtime_error(
             "Input contains duplicate values"
         );
