@@ -2,53 +2,42 @@
 import numpy as np
 import pytest
 
-import cum_mediane
+from cum_median import cumulative_median
 
 
-def test_exemple_diapositive():
-    donnees = np.array([2, 3, 0, 1, 5], dtype=float)
-    medianes_attendues = np.array([2, 2.5, 2, 1.5, 2])
-
-    medianes_obtenues = cum_mediane.cum_mediane(donnees)
-
-    np.testing.assert_array_equal(
-        medianes_obtenues,
-        medianes_attendues,
-    )
+def test_slide_example():
+    values = np.array([2, 3, 0, 1, 5], dtype=float)
+    expected = np.array([2, 2.5, 2, 1.5, 2])
+    actual = cumulative_median(values)
+    np.testing.assert_array_equal(actual, expected)
 
 
-def test_donnees_repetees():
-    donnees = np.array([2, 3, 2], dtype=float)
-
-    with pytest.raises(RuntimeError, match="valeurs repetees"):
-        cum_mediane.cum_mediane(donnees)
-
-
-def test_une_seule_valeur():
-    donnees = np.array([7.0])
-
-    medianes_obtenues = cum_mediane.cum_mediane(donnees)
-
-    np.testing.assert_array_equal(medianes_obtenues, donnees)
+def test_duplicate_values():
+    values = np.array([2, 3, 2], dtype=float)
+    with pytest.raises(RuntimeError, match="duplicate values"):
+        cumulative_median(values)
 
 
-def test_tableau_vide():
-    donnees = np.array([], dtype=float)
-
-    with pytest.raises(ValueError, match="vide"):
-        cum_mediane.cum_mediane(donnees)
-
-
-def test_valeurs_non_finies():
-    for valeur_invalide in [np.nan, np.inf, -np.inf]:
-        donnees = np.array([2.0, valeur_invalide])
-
-        with pytest.raises(ValueError, match="finies"):
-            cum_mediane.cum_mediane(donnees)
+def test_single_value():
+    values = np.array([7.0])
+    actual = cumulative_median(values)
+    np.testing.assert_array_equal(actual, values)
 
 
-def test_tableau_multidimensionnel():
-    donnees = np.array([[2.0, 3.0], [0.0, 1.0]])
+def test_empty_array():
+    values = np.array([], dtype=float)
+    with pytest.raises(ValueError, match="empty"):
+        cumulative_median(values)
 
-    with pytest.raises(ValueError, match="dimension"):
-        cum_mediane.cum_mediane(donnees)
+
+def test_non_finite_values():
+    for invalid_value in [np.nan, np.inf, -np.inf]:
+        values = np.array([2.0, invalid_value])
+        with pytest.raises(ValueError, match="finite"):
+            cumulative_median(values)
+
+
+def test_multidimensional_array():
+    values = np.array([[2.0, 3.0], [0.0, 1.0]])
+    with pytest.raises(ValueError, match="one-dimensional"):
+        cumulative_median(values)

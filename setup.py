@@ -6,20 +6,22 @@ from setuptools import setup
 
 extensions = [
     Pybind11Extension(
-        "cum_mediane",
+        "cum_median",
         [
             "src/interface.cpp",
             "src/cum_mediane.cpp",
         ],
         cxx_std=17,
-        extra_compile_args=["/O2", "/GL-"] if os.name == "nt" else [],
+        extra_compile_args=(
+            ["/O2", "/GL-"] if os.name == "nt" else []
+        ),
     ),
 ]
 
 setup(
-    name="cum-mediane",
+    name="pybind11-cumulative-median",
     version="0.1.0",
-    description="Calcul de medianes cumulatives en C++",
+    description="Cumulative median computation using C++ and pybind11",
     ext_modules=extensions,
     cmdclass={"build_ext": build_ext},
     python_requires=">=3.9",

@@ -10,92 +10,90 @@
 
 namespace py = pybind11;
 
-py::array_t<double> cum_mediane_python(
+py::array_t<double> cumulative_median_python(
     py::array_t<double, py::array::c_style |
-                        py::array::forcecast> donnees
+                        py::array::forcecast> values
 ) {
-    const py::buffer_info entree = donnees.request();
+    const py::buffer_info input = values.request();
 
-    if (entree.ndim != 1) {
+    if (input.ndim != 1) {
         throw std::invalid_argument(
-            "Les donnees doivent avoir une dimension"
+            "Input must be one-dimensional"
         );
     }
 
-    if (entree.size == 0) {
+    if (input.size == 0) {
         throw std::invalid_argument(
-            "Le tableau ne doit pas etre vide"
+            "Input array must not be empty"
         );
     }
 
-    if (entree.size > std::numeric_limits<int>::max()) {
+    if (input.size > std::numeric_limits<int>::max()) {
         throw std::invalid_argument(
-            "Le tableau contient trop de valeurs"
+            "Input array is too large"
         );
     }
 
-    const auto* donnees_ptr =
-        static_cast<const double*>(entree.ptr);
+    const auto* input_ptr =
+        static_cast<const double*>(input.ptr);
 
-    for (py::ssize_t indice = 0; indice < entree.size; ++indice) {
-        if (!std::isfinite(donnees_ptr[indice])) {
+    for (py::ssize_t index = 0; index < input.size; ++index) {
+        if (!std::isfinite(input_ptr[index])) {
             throw std::invalid_argument(
-                "Les donnees doivent etre finies"
+                "Input values must be finite"
             );
         }
     }
 
-    py::array_t<double> sortie(entree.size);
-    const py::buffer_info resultat = sortie.request();
-    auto* sortie_ptr = static_cast<double*>(resultat.ptr);
+    py::array_t<double> output(input.size);
+    const py::buffer_info result = output.request();
+    auto* output_ptr = static_cast<double*>(result.ptr);
 
-    const int statut = cum_mediane(
-        donnees_ptr,
-        static_cast<int>(entree.size),
-        sortie_ptr
+    const int status = cum_mediane(
+        input_ptr,
+        static_cast<int>(input.size),
+        output_ptr
     );
 
-    if (statut == ERROR_DONNEES_REPETEES) {
+    if (status == ERROR_DONNEES_REPETEES) {
         throw std::runtime_error(
-            "Les donnees contiennent des valeurs repetees"
+            "Input contains duplicate values"
         );
     }
 
-    if (statut != SUCCESS) {
+    if (status != SUCCESS) {
         throw std::runtime_error(
-            "Le calcul de la mediane cumulative a echoue"
+            "Cumulative median computation failed"
         );
     }
 
-    return sortie;
+    return output;
 }
 
-
-
-PYBIND11_MODULE(cum_mediane, module) {
+PYBIND11_MODULE(cum_median, module) {
     module.def(
-        "cum_mediane",
-        &cum_mediane_python,
-        py::arg("donnees"),
+        "cumulative_median",
+        &cumulative_median_python,
+        py::arg("values"),
         R"doc(
-Calculer les medianes cumulatives.
+Compute cumulative medians of distinct values.
 
 Parameters
 ----------
-donnees : numpy.ndarray
-    Tableau unidimensionnel de valeurs finies et distinctes.
+values : numpy.ndarray
+    One-dimensional array of finite, distinct values.
 
 Returns
 -------
 numpy.ndarray
-    Mediane cumulative apres chaque insertion.
+    Median computed after each new value.
 
 Raises
 ------
 ValueError
-    Si les donnees sont invalides.
+    If the input array is invalid.
 RuntimeError
-    Si les donnees contiennent des doublons.
+    If the array contains duplicate values.
 )doc"
     );
 }
