@@ -4,38 +4,38 @@
 #include <iterator>
 #include <set>
 
-int cum_mediane(
-    const double* donnees_ptr,
-    const int taille,
-    double* sortie_ptr
+int cumulative_median(
+    const double* values_ptr,
+    const int size,
+    double* output_ptr
 ) {
-    std::set<double> valeurs_triees;
-    std::set<double>::iterator mediane_it;
+    std::set<double> sorted_values;
+    std::set<double>::iterator median_it;
 
-    for (int indice = 0; indice < taille; ++indice) {
-        const double valeur = donnees_ptr[indice];
-        const auto insertion = valeurs_triees.insert(valeur);
+    for (int index = 0; index < size; ++index) {
+        const double value = values_ptr[index];
+        const auto insertion = sorted_values.insert(value);
 
         if (!insertion.second) {
-            return ERROR_DONNEES_REPETEES;
+            return ERROR_DUPLICATE_VALUES;
         }
 
-        if (indice == 0) {
-            mediane_it = insertion.first;
-        } else if (valeurs_triees.size() % 2 == 0) {
-            if (valeur < *mediane_it) {
-                --mediane_it;
+        if (index == 0) {
+            median_it = insertion.first;
+        } else if (sorted_values.size() % 2 == 0) {
+            if (value < *median_it) {
+                --median_it;
             }
-        } else if (valeur > *mediane_it) {
-            ++mediane_it;
+        } else if (value > *median_it) {
+            ++median_it;
         }
 
-        if (valeurs_triees.size() % 2 == 0) {
-            const auto suivant_it = std::next(mediane_it);
-            sortie_ptr[indice] =
-                *mediane_it / 2.0 + *suivant_it / 2.0;
+        if (sorted_values.size() % 2 == 0) {
+            const auto next_it = std::next(median_it);
+            output_ptr[index] =
+                *median_it / 2.0 + *next_it / 2.0;
         } else {
-            sortie_ptr[indice] = *mediane_it;
+            output_ptr[index] = *median_it;
         }
     }
 
