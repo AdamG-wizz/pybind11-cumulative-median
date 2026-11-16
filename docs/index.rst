@@ -1,35 +1,38 @@
 
-cum-mediane
-===========
+Cumulative Median
+=================
 
-Package Python utilisant C++ pour calculer les medianes cumulatives.
+A Python package for efficient cumulative median computation,
+implemented in C++ and exposed to Python using pybind11.
 
 Installation
 ------------
 
+Install the package from PyPI:
+
 .. code-block:: bash
 
-   pip install cum-mediane
+   pip install cum-median
 
-Utilisation
------------
+Usage
+-----
 
 .. code-block:: python
 
    import numpy as np
-   import cum_mediane
+   from cum_median import cumulative_median
 
-   donnees = np.array([2, 3, 0, 1, 5], dtype=float)
-   medianes = cum_mediane.cum_mediane(donnees)
-   print(medianes)
+   values = np.array([2, 3, 0, 1, 5], dtype=float)
+   medians = cumulative_median(values)
+   print(medians)
 
-Resultat attendu :
+Expected output:
 
 .. code-block:: text
 
    [2.  2.5 2.  1.5 2. ]
 
-Documentation de la fonction
-----------------------------
+API Reference
+-------------
 
-.. autofunction:: cum_mediane.cum_mediane
+.. autofunction:: cum_median.cumulative_median

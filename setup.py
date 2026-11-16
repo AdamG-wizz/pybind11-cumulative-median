@@ -19,7 +19,7 @@ extensions = [
 ]
 
 setup(
-    name="pybind11-cumulative-median",
+    name="cum-median",
     version="0.1.0",
     description="Cumulative median computation using C++ and pybind11",
     ext_modules=extensions,

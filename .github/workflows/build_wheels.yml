@@ -46,7 +46,7 @@ jobs:
 
     environment:
       name: pypi
-      url: https://pypi.org/project/cum-mediane/
+      url: https://pypi.org/project/cum-median/
 
     permissions:
       id-token: write
