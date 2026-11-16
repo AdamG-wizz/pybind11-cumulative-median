@@ -1,6 +1,6 @@
 
-project = "cum-mediane"
-release = "0.1.0"
+project = "cum-median"
+release = "0.1.1"
 
 extensions = [
     "sphinx.ext.autodoc",
